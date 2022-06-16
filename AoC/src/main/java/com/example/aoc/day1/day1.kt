@@ -16,8 +16,7 @@ fun part1() {
         else if (c == ')') floor -= 1
     }
 
-    print("\npart 1 \n")
-    print(floor)
+    println(floor)
 }
 
 fun part2() {
@@ -33,8 +32,7 @@ fun part2() {
             floor -= 1
 
             if (floor == -1) {
-                print("\npart 2 \n")
-                print(i+1)
+                println(i+1)
                 break
             }
         }
