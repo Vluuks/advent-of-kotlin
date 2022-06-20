@@ -2,8 +2,45 @@ package com.example.aoc.day3
 
 import com.example.aoc.FileReader
 
+class DeliveryPerson() {
+    private var presentDeliveryMap: HashMap<String, Int> = HashMap()
+    private var row: Int = 0
+    private var column: Int = 0
+
+    init {
+        // deliver at starting location
+        presentDeliveryMap["0,0"] = 1
+    }
+
+    fun move(character: Char) {
+        when (character) {
+            '^' -> row -= 1
+            'v' -> row += 1
+            '>' -> column += 1
+            '<' -> column -= 1
+        }
+
+        addToMap(row, column)
+    }
+
+    private fun addToMap(currentRow: Int, currentColumn: Int) {
+        val key = "${currentRow},${currentColumn}"
+
+        // keep present count
+        if (!presentDeliveryMap.containsKey(key)) {
+            presentDeliveryMap[key] = 1
+        } else {
+            presentDeliveryMap[key]!!.plus(1)
+        }
+    }
+
+    fun getMap(): Map<String, Int> {
+        return this.presentDeliveryMap
+    }
+}
+
 fun main() {
-//    part1()
+    part1()
     part2()
 }
 
@@ -53,68 +90,19 @@ fun part2() {
     val lines: List<String> = FileReader("input3").readFile()
     val characters = lines[0].toList()
 
-    val map = HashMap<String, Int>()
+    val santa = DeliveryPerson()
+    val roboSanta = DeliveryPerson()
 
-    var rowSanta = 0
-    var colSanta = 0
-
-    var rowRobo = 0
-    var colRobo = 0
-
-    // they both start at 0,0
-    map["0-0"] = 2
 
     // why no regular for -.- i hate it when languages do that
     for(i in characters.indices) {
-        var key = ""
-
-        // alternate turns for santa and robo santa
         if(i % 2 == 0) {
-            val (row, col) = getMoveIndices(characters[i], rowSanta, colSanta)
-
-            rowSanta = row
-            colSanta = col
-
-            key = "${row}-${col}"
-
+            santa.move(characters[i])
         }
         else {
-            val (row, col) = getMoveIndices(characters[i], rowRobo, colRobo)
-
-            rowRobo = row
-            colRobo = col
-
-            key = "${row}-${col}"
-        }
-
-        // keep present count
-        if (!map.containsKey(key)) {
-            map[key] = 1
-        } else {
-            map[key]!!.plus(1)
+            roboSanta.move(characters[i])
         }
     }
 
-    var gotAtLeastOneGift = 0
-    for((k, v) in map) {
-        if(v > 0) {
-            gotAtLeastOneGift++
-        }
-    }
-    println(gotAtLeastOneGift)
-}
-
-// why are params final that's kinda annoying
-fun getMoveIndices(character: Char, row: Int, col: Int): Pair<Int, Int> {
-    var rowMutable = row
-    var colMutable = col
-
-    when (character) {
-        '^' -> rowMutable -= 1
-        'v' -> rowMutable += 1
-        '>' -> colMutable += 1
-        '<' -> colMutable -= 1
-    }
-
-    return rowMutable to colMutable
+    println((santa.getMap() + roboSanta.getMap()).values.sum())
 }
