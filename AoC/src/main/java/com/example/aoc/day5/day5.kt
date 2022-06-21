@@ -39,14 +39,14 @@ fun part2() {
 
     var niceStrings = 0
 
-    for(string in lines) {
+    for((count, string) in lines.withIndex()) {
 
         // time to nest because I'm not good at regex!
         var hasTwoPairs = false
         loop@ for(c1 in 'a'..'z'){
             for(c2 in 'a'..'z'){
-                // if we found a double occurrence of a pair, e.g. aa or ab twice
-                if(Regex("(${c1}${c2})").findAll(string).count() == 2) {
+                // if we found a double occurrence of a pair, e.g. aa or ab at least twice
+                if(Regex("(${c1}${c2})").findAll(string).count() > 1) {
                     hasTwoPairs = true
                     break@loop
                 }
@@ -59,15 +59,14 @@ fun part2() {
         }
 
         var hasTriple = false
-        for(c in 'a'..'z'){
-            if(Regex("(${c}[^${c}]${c})").findAll(string).count() > 0) {
+        for(c in 'a'..'z') {
+            if(Regex("(${c}.${c})").findAll(string).count() > 0) {
                 hasTriple = true
                 break
             }
         }
 
         if(hasTwoPairs && hasTriple) {
-            println(string)
             niceStrings++
         }
     }
