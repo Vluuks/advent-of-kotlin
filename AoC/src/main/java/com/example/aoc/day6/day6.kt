@@ -31,9 +31,7 @@ class Grid(private val rowCount: Int, private val columnCount: Int) {
 
     fun traverseGrid(topLeft: Pair<Int, Int>, bottomRight: Pair<Int, Int>, command: String) {
         for(i in topLeft.first..bottomRight.first) {
-            println(i)
             for(j in topLeft.second..bottomRight.second) {
-                println(j)
                 alterLightState(command, i, j)
             }
         }
@@ -44,24 +42,31 @@ class Grid(private val rowCount: Int, private val columnCount: Int) {
             println(row)
         }
     }
+
+    fun getSum(): Int {
+        var total = 0
+        for(row in grid) {
+            total += row.sum()
+        }
+        return total
+    }
 }
 
 fun part1() {
     val lines: List<String> = FileReader("input6").readFile()
 
-    val grid = Grid(5, 5)
+    val grid = Grid(1000, 1000)
     grid.initGrid()
 
-
-    // turn on 887,9 through 959,629
     for(line in lines) {
         val coordinates = Regex("(\\d+),(\\d+)").findAll(line).toList()
         val topLeft = coordinates[0].groups[1]!!.value.toInt() to coordinates[0].groups[2]!!.value.toInt()
-        val bottomRight = coordinates[1].groups[1]!!.value.toInt() to coordinates[0].groups[2]!!.value.toInt()
+        val bottomRight = coordinates[1].groups[1]!!.value.toInt() to coordinates[1].groups[2]!!.value.toInt()
 
-        grid.traverseGrid(topLeft, bottomRight, "on")
-        break
+        if(line.contains("on")) grid.traverseGrid(topLeft, bottomRight, "on")
+        if(line.contains("off")) grid.traverseGrid(topLeft, bottomRight, "off")
+        if(line.contains("toggle")) grid.traverseGrid(topLeft, bottomRight, "toggle")
     }
 
-    grid.print()
+    println(grid.getSum())
 }
